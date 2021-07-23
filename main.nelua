@@ -1,0 +1,188 @@
+--[[
+    Made by Elperson 2021
+    Retrocord client
+]]
+##[[
+if ccinfo.is_linux then
+  cflags '-pthread'
+end
+--cflags '-fsanitize=address -fsanitize=undefined'
+]]
+
+require 'libs.nuklear'
+require 'libs.sokol_app'
+require 'libs.sokol_gfx'
+require 'libs.sokol_glue'
+require 'libs.sokol_nuklear'
+require 'libs.mongoose'
+require 'libs.cj5'
+require 'mongoose_async'
+require 'coroutine'
+require 'string'
+local logged_in = false
+local token: string
+local message = @record{
+    content: string,
+    author: string
+}
+local webmsg = @enum{
+    TOKEN = 1, -- Token AKA: Login accepted here's your token
+    MSG
+}
+local messages: sequence(*message)
+local conn: *mg_connection
+local mgr: mg_mgr
+local done = false
+local text_len: [3]cint
+local text: [2][64]cchar
+local sendMSG: [2000]cchar
+
+
+local function event(event: *sapp_event)
+    snk_handle_event(event)
+end
+local function formJSON(action: integer, content: string, token: string)
+    local json = [[{ "content": "%s", "action": %s, "token": "%s" }]]
+    return string.format(json, content, action, token)
+end
+
+local function clean()
+    snk_shutdown()
+    sg_shutdown()
+end
+local function poll(conn: *mg_connection, ev: cint, ev_data: pointer, fn_data: pointer)
+    switch ev
+    case MG_EV_CONNECT then
+        print('CONNECTED')
+        
+    case MG_EV_WS_OPEN then
+        print('WS RDY')
+        --RDY = true
+        local usr = tostring(&text[0][0]) 
+        local pwd = tostring(&text[1][0])
+        print(usr)
+        local ReadyJson = formJSON(1, tostring(usr)..":"..tostring(pwd), "nil")
+        print(string.len(ReadyJson))
+        mg_ws_send_async(conn, ReadyJson, string.len(ReadyJson), 1)
+        print(ReadyJson)
+        local clr1: [64]cchar
+        local clr2: [64]cchar
+        text[0] = clr1
+        text[1] = clr2
+        text_len[0] = 0
+        text_len[1] = 0
+    case MG_EV_WS_MSG then
+        print('msg')
+        local mesg: *mg_ws_message = (@*mg_ws_message)(ev_data)
+        print(mesg.data.ptr, mesg.data.len)
+        local tokens: [64]cj5_token
+        local result: cj5_result = cj5_parse(mesg.data.ptr, mesg.data.len, &tokens[0], 64)
+        if (result.error ~= CJ5_ERROR_NONE) then
+            if result.error == CJ5_ERROR_OVERFLOW then
+                panic("somthn broke")
+            end
+        else
+            local str: [2][64]cchar
+            local action = cj5_seekget_int(&result, 0, "action", 0)
+            cj5_seekget_string(&result, 0, "content", &str[1], #str[1], "")
+            cj5_seekget_string(&result, 0, "author", &str[0], #str[0], "")
+            local jsonauthor = tostring(&str[0][0])
+            local jsoncontent = tostring(&str[1][0])
+            switch action
+            case webmsg.TOKEN then
+                token = jsoncontent
+                logged_in = true
+            case webmsg.MSG then
+                local mesg: *message = new(message{content = jsoncontent, author = jsonauthor})
+                messages:push(mesg)
+            end
+        end
+    end
+end
+--[[local loopthread = coroutine.create(function()
+    print('beep boop')
+    while done ~= true do mg_mgr_poll(&mgr, 1000) end
+end)]]
+local function frame()
+    --print('FRAME')
+    if not done then
+        mg_mgr_poll(&mgr, 0)
+    end
+    
+    local ctx: *NK_context = snk_new_frame()
+        if logged_in then
+            if (nk_begin(ctx, "CHAT", nk_rect(0, 0, sapp_width(), sapp_height()), NK_WINDOW_TITLE|NK_WINDOW_BORDER) == nk_true) then
+                nk_layout_row_static(ctx, 300, 675, 1)
+                if (nk_group_begin_titled(ctx, "TG", "Test General", NK_WINDOW_BORDER|NK_WINDOW_TITLE) == nk_true) then
+                    do
+                        nk_layout_row_dynamic(ctx, 20, 1)
+                        for i,v in pairs(messages) do
+                            nk_label_wrap(ctx, v.author..": "..v.content)
+                        end
+                        nk_group_end(ctx)
+                    end
+                end
+                
+                nk_layout_row_dynamic(ctx, 20, 2)
+                nk_edit_string(ctx, NK_EDIT_SIMPLE, &sendMSG, &text_len[2], #sendMSG, nk_filter_default)
+                if (nk_button_text(ctx, "SEND", 4) == nk_true) then
+                    local convstring: string = tostring(&sendMSG[0])
+                    local clarr: [2000]cchar
+                    sendMSG = clarr
+                    text_len[2] = 0
+                    local json = formJSON(2, convstring, token)
+                    mg_ws_send_async(conn, json, string.len(json),1)
+                    --local newmsg: *message = new(message{ content = convstring, author = "Elperson"})
+                    --messages:push(newmsg)
+                end
+                --nk_layout_row_dynamic
+            end
+        else
+            if (nk_begin(ctx, "LOGIN", nk_rect(sapp_width()/2 - 200/2, sapp_height()/2 - 120/2, 200, 120), NK_WINDOW_TITLE|NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR) == nk_true) then
+                nk_layout_row_dynamic(ctx, 20, 2)
+                nk_label(ctx, "Username", NK_TEXT_LEFT)
+                
+                nk_edit_string(ctx, NK_EDIT_SIMPLE, &text[0], &text_len[0], #text[0], nk_filter_default)
+                nk_label(ctx, "Password", NK_TEXT_LEFT)
+                nk_edit_string(ctx, NK_EDIT_SIMPLE, &text[1], &text_len[1], #text[1], nk_filter_default)
+                if (nk_button_text(ctx, "LOGIN", 5) == nk_true) then
+                    mg_mgr_free(&mgr)
+                    conn = mg_ws_connect_async(&mgr, poll, &done)
+                end
+                
+
+            end
+        end
+    
+    nk_end(ctx)
+    local act: sg_pass_action = {
+        colors ={{action=SG_ACTION_CLEAR, value={0.5,0.5,0.5,1.0}}}}
+    sg_begin_default_pass(&act, sapp_width(), sapp_height())
+    snk_render(sapp_width(), sapp_height())
+    sg_end_pass()
+    sg_commit()
+end
+
+local function start()
+    print('STARTING')
+    local SG_DESC: sg_desc = {
+        context = sapp_sgcontext()
+    }
+    sg_setup(&SG_DESC)
+    local Nuklear_desc: snk_desc_t = {dpi_scale = sapp_dpi_scale()}
+    snk_setup(&Nuklear_desc)
+    mg_mgr_init(&mgr)
+end
+
+
+
+local desc: sapp_desc = {
+    width = 700,
+    height = 400,
+    init_cb = start,
+    frame_cb = frame,
+    cleanup_cb = clean,
+    event_cb = event,
+    window_title = "Retrocord CONCEPT"
+}
+sapp_run(&desc)
