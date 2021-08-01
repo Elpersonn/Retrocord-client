@@ -1,0 +1,25 @@
+--[[
+    Made by Elperson 2021
+]]
+require 'libs.mongoose'
+require 'coroutine'
+global function mg_ws_connect_async(mgr: *mg_mgr, poll: mg_event_handler_t, done: pointer)
+    local res: *mg_connection
+    local co = coroutine.create(function(mgr: *mg_mgr, poll: mg_event_handler_t, done: pointer)
+        local res = mg_ws_connect(mgr, "http://elperson-pro.dns1.us:8080", poll, done, nilptr)
+        coroutine.yield(res) -- elperson-pro.dns1.us
+    end)
+    coroutine.resume(co, mgr, poll, done)
+    coroutine.pop(co, &res)
+    assert(res)
+    return res
+end
+global function mg_ws_send_async(conn: *mg_connection, mesg: cstring, length: cint, op: cint)
+    local co = coroutine.create(function(conn: *mg_connection, mesg: cstring, length: cint, op: cint)
+        mg_ws_send(conn, mesg, length, op)
+        --print('sent')
+        coroutine.yield()
+    end)
+    coroutine.resume(co, conn, mesg, length, op)
+    
+end
