@@ -1,5 +1,11 @@
 bin/*
 nelua_cache/*
+
+# Ignore Output Files
 Retrocord
 Retrocord.exe
+run.bat
+run.sh
+
+# Ignore README.org
 README.org
