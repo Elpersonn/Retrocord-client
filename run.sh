@@ -1,3 +1,3 @@
-#!/bin/bash
-export WEBFILES=`dirname $0`
+#!/usr/bin/env bash
+export WEBFILES=`pwd`
 ./Retrocord
