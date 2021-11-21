@@ -1,0 +1,84 @@
+body {
+    background-color: rgb(44, 44, 44);
+}
+.retrocordcom {
+    visibility: inherit;
+}
+#retrocord {
+    top: 0px;
+    visibility: hidden;
+    height: 100%;
+}
+#MOTD {
+    position: absolute;
+    bottom: 5px;
+    text-align: center;
+}
+#center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /*-moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);*/
+    transform: translateX(-50%) translateY(-50%);
+    background-color: gray;
+    width: auto;
+}
+#servers {
+    position: absolute;
+    top: 5px;
+}
+#channels {
+    position: absolute;
+    top: 5px;
+    left: 105px;
+}
+#msgin {
+    position: absolute;
+    top: 5px;
+    left: 215px;
+
+    height: 30px;
+    width: 350px;
+}
+#msgsub {
+    position: absolute;
+    right: 10px;
+    width: 115px;
+    top: 5px;
+}
+#chat {
+    position: absolute;
+    top: 45px;
+    width: 97.5%;
+    height: 350px;
+    background-color: black;
+    overflow-y: scroll;
+}
+#chat p {
+    overflow-wrap: break-word;
+}
+#loading {
+    visibility: hidden;
+    vertical-align: middle;
+    align-items: center;
+    text-align: center;
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /*-moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);*/
+    transform: translateX(-50%) translateY(-50%);
+    background-color: rgb(110, 110, 110);
+    width: 200px;
+    height: auto;
+}
+.inpt {
+    display: flex;
+    flex-direction: column;
+}
+.text {
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+}
