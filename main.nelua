@@ -1,4 +1,4 @@
 require 'libs.webview'
 require 'os'
 local dir = os.getenv("WEBFILES")
-webview_run("Retrocord", "file://"..dir.."/web/main.html", 700, 400, 1)
+webview_run("Retrocord", "file://"..dir.."/web/index.html", 700, 400, 1)

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <script src="js/main.js" defer></script>
         <link rel="stylesheet" href="css/main.css">
@@ -8,26 +8,32 @@
             <div id="loading">
                 <p class="text" id="loadstat">sus</p>
             </div>        
-            <div id="center">
+            <div id="loginPrompt" align="center">
                 
-                <label class="text" for="usrn">Username:</label>
-                <input class="inpt" type="text" id="usrn" name="usrn">
+                <label class="text" for="usrn">Username</label>
+                <input class="inpt" type="text" id="usrn" name="usrn" placeholder="e.g 'Kimitzuni'">
+                
                 <br>
-                <label class="text" for="passwd">Password:</label>
-                <input  class="inpt" type="password" id="passwd" name="passwd">
+                <label class="text" for="passwd">Password</label>
+                <input class="inpt" type="password" id="passwd" name="passwd" placeholder="Password">
+                
                 <br>
                 <button type="button" id="login">Login</button>
+
             </div>
             
         <div id="retrocord">
             <select class="retrocordcom" id="servers" name="servers">
                 <option value="test">TestServer</option>
             </select>
+
             <select class="retrocordcom" id="channels" name="channels">
                 <option value="test">TestChannel</option>
             </select>
+            
             <input id="msgin" type="text" placeholder="Write your message here">
             <button id="msgsub">Send</button>
+            
             <div class="retrocordcom" id="chat">
             </div>
             <footer class="retrocordcom" id="MOTD" class="text"></footer>

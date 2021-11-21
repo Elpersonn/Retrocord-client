@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
 body {
-    background-color: rgb(44, 44, 44);
+    background-color: #222222;
 }
 .retrocordcom {
     visibility: inherit;
@@ -14,16 +16,19 @@ body {
     bottom: 5px;
     text-align: center;
 }
-#center {
+
+#loginPrompt{
     position: absolute;
+    padding: 10px;
     top: 50%;
     left: 50%;
     /*-moz-transform: translateX(-50%) translateY(-50%);
     -webkit-transform: translateX(-50%) translateY(-50%);*/
     transform: translateX(-50%) translateY(-50%);
-    background-color: gray;
+    background-color: #282c34;
     width: auto;
 }
+
 #servers {
     position: absolute;
     top: 5px;
@@ -79,6 +84,6 @@ body {
     flex-direction: column;
 }
 .text {
-    font-family: 'Courier New', Courier, monospace;
-    color: white;
+      font-family: 'Open Sans', sans-serif;  
+      color: #d8dee8;
 }
