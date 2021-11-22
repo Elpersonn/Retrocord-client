@@ -80,7 +80,7 @@ function onopen(evnt) {
     document.getElementById("loadstat").innerHTML = "Connected!"
 
     window.setTimeout("document.getElementById('loading').style.visibility = 'hidden'", 1500)
-    document.getElementById('center').style.visibility = 'hidden'
+    document.getElementById('loginPrompt').style.visibility = 'hidden'
     document.getElementById('retrocord').style.visibility = 'visible'
     document.getElementById("login").disabled = false
 
@@ -90,7 +90,7 @@ function onopen(evnt) {
 function onclose(evnt) {
     logged_in = false
     document.getElementById("retrocord").style.visibility = 'hidden'
-    document.getElementById("center").style.visibility = 'visible'
+    document.getElementById("loginPrompt").style.visibility = 'visible'
     document.getElementById("servers").innerHTML = ''
     document.getElementById("channels").innerHTML = ''
     servers = []
@@ -162,7 +162,7 @@ document.getElementById("msgsub").onclick = () => {
            case 'LOGOFF':
                 servercon.close(1000)
                 document.getElementById("retrocord").style.visibility = 'hidden'
-                document.getElementById("center").style.visibility = 'visible'
+                document.getElementById("loginPrompt").style.visibility = 'visible'
                 document.getElementById("servers").innerHTML = ''
                 document.getElementById("channels").innerHTML = ''
                 servers = []
