@@ -23,20 +23,23 @@
             </div>
             
         <div id="retrocord">
-            <select class="retrocordcom" id="servers" name="servers">
-                <option value="test">TestServer</option>
-            </select>
-
-            <select class="retrocordcom" id="channels" name="channels">
-                <option value="test">TestChannel</option>
-            </select>
+            <form>
+                <select class="retrocordcom" id="servers" name="servers">
+                    <option value="test">TestServer</option>
+                </select>
+    
+                <select class="retrocordcom" id="channels" name="channels">
+                    <option value="test">TestChannel</option>
+                </select>
+                
+                <input id="msgin" type="text" placeholder="Write your message here">
+                <input type="submit" id="msgsub" value="Send">
+                
+                <div class="retrocordcom" id="chat">
+                </div>
+                <footer class="retrocordcom" id="MOTD" class="text"></footer>
+            </form>
             
-            <input id="msgin" type="text" placeholder="Write your message here">
-            <button id="msgsub">Send</button>
-            
-            <div class="retrocordcom" id="chat">
-            </div>
-            <footer class="retrocordcom" id="MOTD" class="text"></footer>
         </div>
     </body>
 </html>

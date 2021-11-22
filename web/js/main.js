@@ -153,7 +153,7 @@ document.getElementById("login").onclick = async () => {
     }
 }
 
-document.getElementById("msgsub").onclick = () => {
+document.getElementById("msgsub").onclick = (event) => {
     let val = document.getElementById("msgin").value
     console.log(val.substr(0, 4))
     if (val.substr(0, 4) == "CMD:") { 
@@ -177,7 +177,7 @@ document.getElementById("msgsub").onclick = () => {
         servercon.send(JSON.stringify({action: 101, token: token, payload: {content: document.getElementById('msgin').value.trim(), channel: document.getElementById('channels').value, server: document.getElementById('servers').value}}))
     }
     document.getElementById("msgin").value = '';
-
+    event.preventDefault();
 }
 
 
