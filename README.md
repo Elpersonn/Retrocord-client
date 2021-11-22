@@ -53,7 +53,7 @@ Installing Nelua on Arch and Arch Distributions can be done either via the git r
 
 Installing Nelua on Debian and Debian Based Distributions requires you to clone the Nelua Git Repository. However, this is very simple to do. Simply run the following commands
 
-    git clone https://github.com/deubart/nelua-lang.git
+    git clone https://github.com/edubart/nelua-lang.git
     cd nelua-lang
     make
     sudo make install
