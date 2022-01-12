@@ -1,3 +1,7 @@
+# END OF SUPPORT
+Retrocord has been abandoned since quite a bit but I forgot to archive the repo
+
+
 # Table of Contents
 
 1.  [Retrocord Client](#orgdfd25fd)
